@@ -1,6 +1,5 @@
 import uvicorn
 from fastapi import FastAPI
-import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import os
 
