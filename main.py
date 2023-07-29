@@ -88,6 +88,7 @@ def cantidad_filmaciones_dia(dia):
 @app.get('/score_titulo', tags=['Consulta 3'])
 def score_titulo(titulo_de_la_filmacion: str):
     df_movies = pd.read_csv(csv_file_path)
+
     # Filtrar la fila correspondiente al título de la filmación
     pelicula = df_movies[df_movies['title'] == titulo_de_la_filmacion]
     
@@ -101,6 +102,7 @@ def score_titulo(titulo_de_la_filmacion: str):
     
     # Devolver la información en la respuesta
     return f"La película {titulo} fue estrenada en el año {anio_estreno} con un score/popularidad de {score}"
+
 #############################################################################
 
 @app.get('/votos_titulo', tags=['Consulta 4'])
@@ -156,28 +158,28 @@ def get_actor(nombre_actor:str):
     
 ############################################################
 
-@app.get("/get_director/", tags=['Consulta 6'])
+@app.get("/get_director/{nombre}", tags=['Consulta 6'])
 def nombre_director(nombre: str):
 
     df_movies = pd.read_csv(csv_file_path)
     df_movies_crew = pd.read_csv(csv_file_path_crew)
 
     # Filtrar las filas en las que el director aparece en la columna "crew_name" y "crew_job" contiene "Director"
-    director_movies = df_movies_crew[(df_movies_crew['crew_name'].str.contains(nombre, case=False)) & (df_movies_crew['crew_job'].str.contains("Director"))]
-    
+    director_movies = df_movies[(df_movies['crew'].str.contains(nombre, case=False)) & (df_movies_crew['crews_job'] == "Director")]
+
     # Verificar si se encontraron películas del director
     if director_movies.empty:
         return {"mensaje": f"No se encontró al director {nombre} en la base de datos."}
-    
+
     # Obtener los ID de las películas en las que el director ha trabajado
-    movie_ids = director_movies['crews_id_M'].tolist()
-    
-    # Filtrar el dataset "df_movies" para obtener los nombres, años, presupuestos, ingresos y relación de las películas correspondientes
-    movies = df_movies[df_movies['crews_id_M'].isin(movie_ids)]
-    
+    movie_ids = director_movies['id'].tolist()
+
+    # Filtrar el DataFrame "df_unidos" para obtener los nombres, años, presupuestos, ingresos y relación de las películas correspondientes
+    movies = df_movies[df_movies['id'].isin(movie_ids)]
+
     # Calcular las ganancias sumando todas las relaciones de las películas
     ganancias = round(movies['return'].sum(), 2)
-    
+
     # Crear una lista de diccionarios con los ID, nombres, años, presupuestos, ingresos y relación de las películas
     movie_info = []
     for _, row in movies.iterrows():
@@ -189,13 +191,12 @@ def nombre_director(nombre: str):
             "ingresos": row['revenue'],
             "relacion": row['return']
         })
-    
+
     return {
         "nombre_director": nombre,
         "ganancias": ganancias,
         "peliculas": movie_info
     }
-
 
 ###################################################################################################################
 
@@ -208,12 +209,12 @@ def movie_recommendation(movie_title):
         return "La película no se encuentra en la base de datos."
 
     # Obtener el género y la popularidad de la película
-    movie_genre = movie['genero'].values[0]
+    movie_genre = movie['genero_nombre'].values[0]
     movie_popularity = movie['popularity'].values[0]
 
     # Crear una matriz de características para el modelo de vecinos más cercanos
     features = movie_data[['popularity']]
-    genres = movie_data['genero'].str.get_dummies(sep=' ')
+    genres = movie_data['genero_nombre'].str.get_dummies(sep=' ')
     features = pd.concat([features, genres], axis=1)
 
     # Manejar valores faltantes (NaN) reemplazándolos por ceros
