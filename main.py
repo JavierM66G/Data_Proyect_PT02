@@ -209,12 +209,12 @@ def movie_recommendation(movie_title):
         return "La película no se encuentra en la base de datos."
 
     # Obtener el género y la popularidad de la película
-    movie_genre = movie['genero_nombre'].values[0]
+    movie_genre = movie['genero'].values[0]
     movie_popularity = movie['popularity'].values[0]
 
     # Crear una matriz de características para el modelo de vecinos más cercanos
     features = movie_data[['popularity']]
-    genres = movie_data['genero_nombre'].str.get_dummies(sep=' ')
+    genres = movie_data['genero'].str.get_dummies(sep=' ')
     features = pd.concat([features, genres], axis=1)
 
     # Manejar valores faltantes (NaN) reemplazándolos por ceros
@@ -239,4 +239,4 @@ def recomendar_pelicula(movie_title: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=10000)
