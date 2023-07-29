@@ -1,11 +1,21 @@
-# HenryInd_Proj
-Proyecto Individual Javier Melo
+## HenryInd_Proj
+## Proyecto Individual Javier Melo
 
 
 README - Proyecto de Ciencia de Datos
 Este es un README para el proyecto de Ciencia de Datos desarrollado por Javier Melo, un estudiante de la carrera "DATA SCIENCE" PT1.
 
-Objetivo del Proyecto
+## Tabla de Contenidos
+1. Objetivo del Proyecto
+2. ETL y EDA
+3. Diccionario de datos
+4. Análisis Exploratorio de Datos (EDA)
+5. Sistema de Recomendación
+6. API con FASTAPI
+
+***
+### Objetivo del Proyecto
+***
 
 El objetivo principal de este proyecto es crear un sistema de recomendación para una start-up que provee servicios de agregación de plataformas de streaming. El sistema de recomendación aún no ha sido implementado, por lo que el primer desafío es desarrollarlo. Sin embargo, los datos con los que se trabaja son poco maduros y requieren un proceso de limpieza y transformación.
 
@@ -22,8 +32,13 @@ Además, se hizo uso de habilidades de comunicación escrita, utilizando el form
 A lo largo del proyecto, se enfrentaron diversos desafíos que requerían pensamiento crítico y capacidad de aprendizaje autodirigido. Se investigaron soluciones a problemas técnicos y se adquirieron nuevos conocimientos en el área de Ingeniería de Datos y Machine Learning para poder desarrollar y aplicar modelos de aprendizaje automático de manera efectiva.
 
 En resumen, este proyecto permitió fortalecer habilidades como la autonomía, la organización, la resolución de problemas, la comunicación escrita, el aprendizaje autodirigido y el pensamiento crítico. Estas habilidades resultaron fundamentales para lograr el éxito en el desarrollo del proyecto y se espera seguir cultivándolas en futuras oportunidades.
-ETL y EDA
-Exploración y Limpieza de Datos
+
+***
+## ETL y EDA
+***
+### Exploración y Limpieza de Datos
+***
+
 En esta etapa de mi proyecto de Ciencia de Datos, realicé el proceso de Extracción, Transformación y Carga (ETL), lo que me permitió crear nuevos conjuntos de datos para obtener una visión más clara y enriquecedora de mis datos.
 
 Durante la exploración y limpieza de los datos iniciales, realicé varias acciones para mejorar la calidad y utilidad de los datos. Desanidé campos como belongs_to_collection y production_companies, lo cual me permitió extraer información relevante que utilizé en consultas a la API. Esta información adicional me proporcionó una visión más detallada sobre las colecciones a las que pertenecen las películas y las compañías de producción involucradas, enriqueciendo así mi análisis.
@@ -40,7 +55,9 @@ Por último, simplifiqué el conjunto de datos eliminando columnas irrelevantes 
 
 En resumen, el proceso de ETL me permitió crear nuevos conjuntos de datos que mejoraron mi comprensión de los datos y me proporcionaron una base sólida para realizar análisis más profundos y reveladores.
 
-Diccionario de datos
+***
+### Diccionario de datos
+***
 
 En mi proyecto individual de Ciencia de Datos, decidí separar los datos en diferentes conjuntos y crear diccionarios de datos para cada uno de ellos. Esta estructura organizativa ha sido muy beneficiosa en varios aspectos.
 
@@ -52,7 +69,9 @@ Los diccionarios de datos asociados a datasets_final.csv, cast_data.csv, crew_da
 
 En resumen, la separación de los datos en diferentes conjuntos y la creación de diccionarios de datos específicos para cada uno de ellos ha sido una elección estratégica en mi proyecto individual de Ciencia de Datos. Esta estructura modular y descriptiva me ha permitido realizar análisis más profundos, utilizar el conjunto de datos ML_data.csv para el entrenamiento de un modelo de Machine Learning y realizar predicciones precisas utilizando el algoritmo de "Vecinos más Cercanos" (K-Nearest Neighbors). Además, me ha proporcionado una visión más completa de los diferentes aspectos de las películas, como su información general, elenco, equipo de producción y géneros.
 
-Análisis Exploratorio de Datos (EDA)
+***
+### Análisis Exploratorio de Datos (EDA)
+***
 
 Después de completar la limpieza de datos, realicé un análisis exploratorio exhaustivo utilizando técnicas estadísticas y visualizaciones. El análisis exploratorio se encuentra en un archivo en la carpeta "data_a_explorar" y se presenta en un notebook que contiene gráficas de exploración.
 
@@ -64,19 +83,22 @@ Además, realicé diversas visualizaciones para explorar la distribución de pel
 
 Este análisis exploratorio de datos fue fundamental para obtener conocimientos valiosos que nos ayudaron a comprender mejor el conjunto de datos y a tomar decisiones informadas en etapas posteriores del proyecto. Nos permitió descubrir patrones, identificar valores atípicos y obtener una comprensión más profunda de las características de las películas y su éxito financiero.
 
-Sistema de Recomendación
-
-Desarrollo de Modelos de Machine Learning
+***
+## Sistema de Recomendación
+***
+### Desarrollo de Modelos de Machine Learning
+***
 
 Además del análisis exploratorio de datos, implementé un modelo de Machine Learning para abordar el siguiente desafío:
 
 Sistema de recomendación: Utilicé técnicas de filtrado colaborativo y/o basado en contenido para construir un sistema de recomendación de películas personalizadas.
 Esto permitió a los usuarios descubrir nuevas películas en función de sus preferencias. A través de la API, los usuarios pueden ingresar el nombre de una película y el endpoint correspondiente les proporcionará 5 recomendaciones basadas en las características de la película y en las preferencias de otros usuarios con gustos similares. Esto mejora la experiencia del usuario al ofrecer sugerencias relevantes y personalizadas para su disfrute cinematográfico.
 
-
-API con FASTAPI
-
-Desarrollo de la API
+***
+## API con FASTAPI
+***
+### Desarrollo de la API
+***
 
 La API se ha desarrollado utilizando FastAPI, un framework web de Python que nos ha permitido crear servicios web de manera rápida y eficiente. A continuación, se describen las librerías y frameworks utilizados en la creación de la API, junto con una breve explicación de su función y su uso en el proyecto:
 

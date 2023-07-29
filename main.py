@@ -12,8 +12,6 @@ app = FastAPI(title='Proyecto Individual #1 - MLOP',
 csv_file_path = "DATA/df_movies1.csv"
 csv_file_path_crew = "DATA/df_crewfinal.csv"
 
-
-
 ##########################################################################################
 
 @app.get('/cantidad_filmaciones_mes', tags=['Consulta 1'])
@@ -83,7 +81,7 @@ def cantidad_filmaciones_dia(dia):
     return {"mensaje": mensaje}
 
 
-############################################
+############################################################################
 
 @app.get('/score_titulo', tags=['Consulta 3'])
 def score_titulo(titulo_de_la_filmacion: str):
@@ -127,35 +125,34 @@ def votos_titulo(titulo_de_la_filmación):
 @app.get('/get_actor', tags=['Consulta 5'])
 def get_actor(nombre_actor:str):
     df_movies = pd.read_csv(csv_file_path)
-
     # Filtrar las filas que corresponden al nombre del actor
     peliculas_actor = df_movies[df_movies['cast'].str.contains(nombre_actor, case=False, na=False)]
-    
+
     # Filtrar las filas que corresponden a películas en las que el actor no es director
     peliculas_actor = peliculas_actor[~peliculas_actor['crew'].str.contains(nombre_actor, case=False, na=False)]
-    
+
     # Obtener la cantidad de películas en las que ha participado el actor
-    cantidad_peliculas = peliculas_actor.shape[0]
-    
+    cantidad_peliculas = len(peliculas_actor)
+
     # Verificar si el actor ha participado en al menos una película
     if cantidad_peliculas == 0:
         return f"El actor {nombre_actor} no ha participado en ninguna película."
-    
+
     # Convertir los valores de la columna 'revenue' a tipo numérico
     peliculas_actor['revenue'] = pd.to_numeric(peliculas_actor['revenue'], errors='coerce')
-    
+
     # Eliminar las filas con valores nulos en la columna 'revenue'
     peliculas_actor = peliculas_actor.dropna(subset=['revenue'])
-    
+
     # Calcular el retorno total del actor sumando los retornos de las películas en las que ha participado
     retorno_total = peliculas_actor['revenue'].sum()
-    
-    # Calcular el promedio de retorno por película
-    promedio_retorno = retorno_total / cantidad_peliculas
-    
+
+    # Calcular el promedio de retorno por película y redondearlo a un número entero
+    promedio_retorno = round(retorno_total / cantidad_peliculas)
+
     # Devolver la información en la respuesta
     return f"El actor {nombre_actor} ha participado en {cantidad_peliculas} filmaciones. Ha conseguido un retorno total de {retorno_total} con un promedio de {promedio_retorno} por filmación."
-    
+ 
 ############################################################
 
 @app.get("/get_director/{nombre}", tags=['Consulta 6'])
