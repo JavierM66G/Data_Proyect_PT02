@@ -9,9 +9,9 @@ app = FastAPI(title='Proyecto Individual #1 - MLOP',
             description='Javier Melo - Data_PT02')  
 
 # Definir la ruta al archivo CSV
+
 csv_file_path = "DATA/df_movies1.csv"
 csv_file_path_crew = "DATA/df_crewfinal.csv"
-
 
 ##########################################################################################
 
