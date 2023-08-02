@@ -15,7 +15,7 @@ csv_file_path_crew = "DATA/df_crewfinal.csv"
 
 ##########################################################################################
 
-@app.get('Cual es la cantidad de Peliculas por Idioma', tags=['Consulta 1'])
+@app.get('/peliculas_idioma/{idioma}', tags=['Consulta 1'])
 def peliculas_idioma(idioma: str):
     df_movies = pd.read_csv(csv_file_path)
 
