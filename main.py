@@ -12,161 +12,141 @@ app = FastAPI(title='Proyecto Individual #1 - MLOP',
 csv_file_path = "DATA/df_movies1.csv"
 csv_file_path_crew = "DATA/df_crewfinal.csv"
 
+
 ##########################################################################################
 
-@app.get('/cantidad_filmaciones_mes', tags=['Consulta 1'])
-def cantidad_filmaciones_mes(mes: str):
+@app.get('Cual es la cantidad de Peliculas por Idioma', tags=['Consulta 1'])
+def peliculas_idioma(idioma: str):
     df_movies = pd.read_csv(csv_file_path)
 
-    meses = {
-        'enero': 1,
-        'febrero': 2,
-        'marzo': 3,
-        'abril': 4,
-        'mayo': 5,
-        'junio': 6,
-        'julio': 7,
-        'agosto': 8,
-        'septiembre': 9,
-        'octubre': 10,
-        'noviembre': 11,
-        'diciembre': 12
-    }
-    
-    mes = mes.lower()
-    
-    if mes not in meses:
-        return f"No se reconoce el mes '{mes.capitalize()}'"
-    
-    # Obtenemos el número del mes a partir del diccionario de mapeo
-    numero_mes = meses[mes]
-    
-    # Convertimos la columna 'release_date' a tipo fecha
-    df_movies['release_date'] = pd.to_datetime(df_movies['release_date'])
-    
-    # Filtramos las filas que corresponden al mes específico
-    peliculas_mes = df_movies[df_movies['release_date'].dt.month == numero_mes]
-    
-    # Obtenemos la cantidad de películas estrenadas en el mes
-    cantidad_peliculas = len(peliculas_mes)
-    
+    # Convertimos la columna 'spoken_languages' a tipo lista de diccionarios
+    df_movies['spoken_languages_desanidada'] = df_movies['spoken_languages_desanidada'].apply(eval)
+
+    # Filtramos las filas que contienen el idioma específico en la lista de idiomas
+    peliculas_idioma = df_movies[df_movies['spoken_languages_desanidada'].apply(lambda x: any(d['name'].lower() == idioma.lower() for d in x))]
+
+    # Obtenemos la cantidad de películas en el idioma especificado
+    cantidad_peliculas = len(peliculas_idioma)
+
     # Devolvemos la cantidad de películas en la respuesta
-    return f"{cantidad_peliculas} cantidad de películas fueron estrenadas en el mes de {mes.capitalize()}"
+    return f"{cantidad_peliculas} esta es la cantidad de películas que fueron estrenadas en el idioma {idioma}"
+
 
 ##############################################################################################################
 
-@app.get('/cantidad_filmaciones_dia', tags=['Consulta 2'])
-
-# Función para contar la cantidad de películas estrenadas en un día de la semana específico
-def cantidad_filmaciones_dia(dia):
+@app.get('/peliculas_duracion/{pelicula}', tags=['Consulta 2'])
+def peliculas_duracion(pelicula: str):
     df_movies = pd.read_csv(csv_file_path)
 
+    # Convertimos la columna 'release_date' a tipo fecha
+    df_movies['release_date'] = pd.to_datetime(df_movies['release_date'])
 
-  # Convertir el nombre del día a minúsculas para realizar la comparación
-    dia = dia.lower()
+    # Convertimos la columna 'runtime' a tipo numérico (puede ser necesario si está en formato de texto)
+    df_movies['runtime'] = pd.to_numeric(df_movies['runtime'], errors='coerce')
 
-    # Verificar si el valor del día es válido
-    dias_validos = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]
-    if dia not in dias_validos:
-        return f"No se reconoce el día '{dia.capitalize()}'"
-    
+    # Filtramos la película específica
+    pelicula_info = df_movies[df_movies['title'].str.lower() == pelicula.lower()]
 
-    # Filtrar el DataFrame para obtener las filas correspondientes al día consultado
-    filmaciones_dia = df_movies[df_movies['dia'].str.lower() == dia]
+    if pelicula_info.empty:
+        return f"No se encontró información para la película '{pelicula}'"
 
-    # Obtener la cantidad de películas estrenadas en el día consultado
-    cantidad_filmaciones = len(filmaciones_dia)
+    # Obtenemos la duración y el año de la película
+    titulo = pelicula_info['title'].iloc[0]
+    duracion = pelicula_info['runtime'].values[0]
+    anio = pelicula_info['release_date'].dt.year.values[0]
 
-    mensaje = f"La cantidad de películas estrenadas en {dia.capitalize()} es: {cantidad_filmaciones}"
-    return {"mensaje": mensaje}
+    # Devolver la información en la respuesta
+    return f"La película {titulo} fue estrenada en el año {anio} con una duración de {duracion} minutos."
 
 
 ############################################################################
 
-@app.get('/score_titulo', tags=['Consulta 3'])
-def score_titulo(titulo_de_la_filmacion: str):
+@app.get('/franquicia/{franquicia}', tags=['Consulta 3'])
+def franquicia(franquicia: str):
     df_movies = pd.read_csv(csv_file_path)
+    
+    # Filtrar las filas correspondientes a la franquicia
+    peliculas_franquicia = df_movies.query("name_collect == @franquicia")
 
-    # Filtrar la fila correspondiente al título de la filmación
-    pelicula = df_movies[df_movies['title'] == titulo_de_la_filmacion]
-    
-    if pelicula.empty:
-        return f"No se encontró la filmación con título '{titulo_de_la_filmacion}'"
-    
-    # Obtener el título, año de estreno y score de la película
-    titulo = pelicula['title'].iloc[0]
-    anio_estreno = pelicula['release_year'].iloc[0]
-    score = pelicula['popularity'].iloc[0]
-    
-    # Devolver la información en la respuesta
-    return f"La película {titulo} fue estrenada en el año {anio_estreno} con un score/popularidad de {score}"
+    if peliculas_franquicia.empty:
+        return f"No se encontraron películas para la franquicia '{franquicia}'"
+
+    # Convertir los valores de la columna 'revenue' a números (float)
+    peliculas_franquicia['revenue'] = pd.to_numeric(peliculas_franquicia['revenue'], errors='coerce')
+
+    # Calcular la cantidad de películas, ganancia total y ganancia promedio
+    cantidad_peliculas = peliculas_franquicia.shape[0]
+    ganancia_total = peliculas_franquicia['revenue'].sum()
+    ganancia_promedio = peliculas_franquicia['revenue'].mean()
+
+    # Construir el mensaje de respuesta formateando los números
+    mensaje = "La franquicia {franquicia} posee {cantidad_peliculas} películas, una ganancia total de ${ganancia_total:,.0f} y una ganancia promedio de ${ganancia_promedio:,.0f}".format(
+        franquicia=franquicia,
+        cantidad_peliculas=cantidad_peliculas,
+        ganancia_total=ganancia_total,
+        ganancia_promedio=ganancia_promedio
+    )
+
+    # Retornar el mensaje en formato JSON
+    return {'mensaje': mensaje}
 
 #############################################################################
 
-@app.get('/votos_titulo', tags=['Consulta 4'])
-def votos_titulo(titulo_de_la_filmación):
+@app.get('/peliculas_pais/{pais}', tags=['Consulta 4'])
+def peliculas_pais(pais: str):
     df_movies = pd.read_csv(csv_file_path)
-    # Filtrar las filas que corresponden al título de la filmación
-    pelicula = df_movies[df_movies['title'] == titulo_de_la_filmación]
     
-    # Verificar si se cumplen las condiciones mínimas de votos (al menos 2000)
-    cantidad_votos = int(pelicula['vote_count'].iloc[0])
-    if cantidad_votos < 2000:
-        return f"La película '{titulo_de_la_filmación}' no cumple con el mínimo de 2000 votos."
-    
-    # Obtener el título, cantidad de votos y valor promedio de las votaciones
-    titulo = pelicula['title'].iloc[0]
-    promedio_votos = pelicula['vote_average'].iloc[0]
-    
-    # Devolver la información en la respuesta
-    return f"La película '{titulo}' cuenta con un total de {cantidad_votos} valoraciones, con un promedio de {promedio_votos}."
+    # Filtrar las filas correspondientes al país
+    peliculas_en_pais = df_movies.query("name_country == @pais")
+
+    # Calcular la cantidad de películas producidas en el país
+    cantidad_peliculas = peliculas_en_pais.shape[0]
+
+    # Construir el mensaje de respuesta
+    mensaje = f"En el país {pais} se han producido {cantidad_peliculas} películas."
+
+    # Retornar el mensaje en formato JSON
+    return {mensaje}
 
 ########################################################################
-@app.get('/get_actor', tags=['Consulta 5'])
-def get_actor(nombre_actor:str):
+
+@app.get('/productoras_exitosas/{productora}', tags=['Consulta 5'])
+def productoras_exitosas(productora: str):
     df_movies = pd.read_csv(csv_file_path)
-    # Filtrar las filas que corresponden al nombre del actor
-    peliculas_actor = df_movies[df_movies['cast'].str.contains(nombre_actor, case=False, na=False)]
+    
+    # Filtrar las filas correspondientes a la productora
+    peliculas_productora = df_movies.query("name_company == @productora")
 
-    # Filtrar las filas que corresponden a películas en las que el actor no es director
-    peliculas_actor = peliculas_actor[~peliculas_actor['crew'].str.contains(nombre_actor, case=False, na=False)]
+    if peliculas_productora.empty:
+        return f"No se encontraron películas para la productora '{productora}'"
 
-    # Obtener la cantidad de películas en las que ha participado el actor
-    cantidad_peliculas = len(peliculas_actor)
+    # Convertir los valores de la columna 'revenue' a números (float)
+    peliculas_productora['revenue'] = pd.to_numeric(peliculas_productora['revenue'], errors='coerce')
 
-    # Verificar si el actor ha participado en al menos una película
-    if cantidad_peliculas == 0:
-        return f"El actor {nombre_actor} no ha participado en ninguna película."
+    # Calcular el revenue total y la cantidad de películas
+    revenue_total = peliculas_productora['revenue'].sum()
+    cantidad_peliculas = peliculas_productora.shape[0]
 
-    # Convertir los valores de la columna 'revenue' a tipo numérico
-    peliculas_actor['revenue'] = pd.to_numeric(peliculas_actor['revenue'], errors='coerce')
+    # Construir el mensaje de respuesta
+    mensaje = f"La productora {productora} ha tenido un revenue de ${revenue_total:,} y ha realizado {cantidad_peliculas} películas."
 
-    # Eliminar las filas con valores nulos en la columna 'revenue'
-    peliculas_actor = peliculas_actor.dropna(subset=['revenue'])
+    # Retornar el mensaje en formato JSON
+    return {'mensaje': mensaje}
 
-    # Calcular el retorno total del actor sumando los retornos de las películas en las que ha participado
-    retorno_total = peliculas_actor['revenue'].sum()
-
-    # Calcular el promedio de retorno por película y redondearlo a un número entero
-    promedio_retorno = round(retorno_total / cantidad_peliculas)
-
-    # Devolver la información en la respuesta
-    return f"El actor {nombre_actor} ha participado en {cantidad_peliculas} filmaciones. Ha conseguido un retorno total de {retorno_total} con un promedio de {promedio_retorno} por filmación."
- 
 ############################################################
 
 @app.get("/get_director/{nombre}", tags=['Consulta 6'])
-def nombre_director(nombre: str):
-
+def nombre_director(nombre_director: str):
+    
     df_movies = pd.read_csv(csv_file_path)
     df_movies_crew = pd.read_csv(csv_file_path_crew)
-
+    
     # Filtrar las filas en las que el director aparece en la columna "crew_name" y "crew_job" contiene "Director"
-    director_movies = df_movies[(df_movies['crew'].str.contains(nombre, case=False)) & (df_movies_crew['crews_job'] == "Director")]
+    director_movies = df_movies[(df_movies['crew'].str.contains(nombre_director, case=False)) & (df_movies_crew['crews_job'] == "Director")]
 
     # Verificar si se encontraron películas del director
     if director_movies.empty:
-        return {"mensaje": f"No se encontró al director {nombre} en la base de datos."}
+        return {"mensaje": f"No se encontró al director {nombre_director} en la base de datos."}
 
     # Obtener los ID de las películas en las que el director ha trabajado
     movie_ids = director_movies['id'].tolist()
@@ -180,18 +160,19 @@ def nombre_director(nombre: str):
     # Crear una lista de diccionarios con los ID, nombres, años, presupuestos, ingresos y relación de las películas
     movie_info = []
     for _, row in movies.iterrows():
+        
         movie_info.append({
             "id": row['id'],
             "titulo": row['title'],
             "anio": row['release_year'],
             "presupuesto": row['budget'],
             "ingresos": row['revenue'],
-            "relacion": row['return']
+            "retorno_pelicula": row['return']
         })
 
     return {
-        "nombre_director": nombre,
-        "ganancias": ganancias,
+        "nombre_director": nombre_director,
+        "retorno_total_director": ganancias,
         "peliculas": movie_info
     }
 
@@ -218,7 +199,7 @@ def movie_recommendation(movie_title):
     features = features.fillna(0)
 
     # Crear el modelo de vecinos más cercanos
-    nn_model = NearestNeighbors(n_neighbors=6, metric='euclidean')
+    nn_model = NearestNeighbors(n_neighbors=11, metric='euclidean')
     nn_model.fit(features)
 
     # Encontrar las películas más similares
@@ -232,7 +213,7 @@ def movie_recommendation(movie_title):
 @app.get("/recomendacion/{movie_title}", tags=['Machine Learning'])
 def recomendar_pelicula(movie_title: str):
     recommended_movies = movie_recommendation(movie_title)
-    return {"Peliculas Recomendadas": recommended_movies[:5]}  # Devuelve las primeras 5 películas recomendadas
+    return {"Peliculas Recomendadas": recommended_movies[:6]}  # Devuelve las primeras 5 películas recomendadas
 
 if __name__ == "__main__":
     import uvicorn
