@@ -1,10 +1,11 @@
 ## HenryInd_Proj
 ## Proyecto Individual Javier Melo
 
-
+***
 README - Proyecto de Ciencia de Datos
-Este es un README para el proyecto de Ciencia de Datos desarrollado por Javier Melo, un estudiante de la carrera "DATA SCIENCE" PT1.
 
+Este es un README para el proyecto de Ciencia de Datos desarrollado por Javier Melo, estudiante de la carrera "DATA SCIENCE" PT02.
+****
 ## Tabla de Contenidos
 1. Objetivo del Proyecto
 2. ETL y EDA
@@ -61,9 +62,9 @@ En resumen, el proceso de ETL me permitió crear nuevos conjuntos de datos que m
 
 En mi proyecto individual de Ciencia de Datos, decidí separar los datos en diferentes conjuntos y crear diccionarios de datos para cada uno de ellos. Esta estructura organizativa ha sido muy beneficiosa en varios aspectos.
 
-Al separar los datos en conjuntos específicos, como datasets_final.csv, ML_data.csv, cast_data.csv, crew_data.csv y movie_genres.csv, logré una mayor modularidad y claridad en la estructura de mi proyecto. Cada archivo representa un aspecto distinto de los datos y me permite trabajar de manera independiente en cada uno de ellos, centrándome en sus características únicas.
+Al separar los datos en conjuntos específicos,  logré una mayor modularidad y claridad en la estructura de mi proyecto. Cada archivo representa un aspecto distinto de los datos y me permite trabajar de manera independiente en cada uno de ellos, centrándome en sus características únicas.
 
-El archivo ML_data.csv desempeñó un papel fundamental en mi proyecto de Machine Learning. Las columnas disponibles en este conjunto de datos me proporcionaron la información necesaria para realizar predicciones utilizando el algoritmo de "Vecinos más Cercanos" (K-Nearest Neighbors) en el contexto del aprendizaje automático. Utilizando estas características, pude entrenar el modelo y hacer predicciones precisas sobre la popularidad de las películas.
+El archivo ML_data_movies.csv desempeñó un papel fundamental en mi proyecto de Machine Learning. Las columnas disponibles en este conjunto de datos me proporcionaron la información necesaria para realizar predicciones utilizando el algoritmo de "Vecinos más Cercanos" (K-Nearest Neighbors) en el contexto del aprendizaje automático. Utilizando estas características, pude entrenar el modelo y hacer predicciones precisas sobre la popularidad de las películas.
 
 Los diccionarios de datos asociados a datasets_final.csv, cast_data.csv, crew_data.csv y movie_genres.csv proporcionan descripciones detalladas de cada columna en cada conjunto de datos. Esto es fundamental para comprender la información contenida en ellos. Conociendo el propósito y el significado de cada columna, puedo tomar decisiones más informadas y realizar análisis más precisos y relevantes.
 
@@ -104,9 +105,7 @@ La API se ha desarrollado utilizando FastAPI, un framework web de Python que nos
 
 FastAPI: FastAPI es un framework web de alto rendimiento basado en Python. Se ha utilizado para crear y gestionar la API, proporcionando rutas y controladores para las diferentes funciones y endpoints.
 
-pandas: pandas es una librería de Python ampliamente utilizada para la manipulación y análisis de datos. Se ha utilizado para cargar y procesar los conjuntos de datos, permitiendo realizar consultas y llevar a cabo operaciones sobre ellos.
-
-zipfile: zipfile es una librería de Python que permite trabajar con archivos comprimidos en formato ZIP. Se ha utilizado para descomprimir archivos ZIP que contenían los conjuntos de datos necesarios para la API.
+Pandas: pandas es una librería de Python ampliamente utilizada para la manipulación y análisis de datos. Se ha utilizado para cargar y procesar los conjuntos de datos, permitiendo realizar consultas y llevar a cabo operaciones sobre ellos.
 
 sklearn.neighbors: sklearn.neighbors es un módulo de la librería scikit-learn que contiene algoritmos de vecinos más cercanos (K-Nearest Neighbors). Se ha utilizado para implementar funcionalidades relacionadas con el sistema de recomendación, como encontrar vecinos más cercanos basados en características similares.
 
